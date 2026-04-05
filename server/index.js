@@ -3,8 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
-import authRouter from './routes/auth.route.js'
-import { errorHandling } from './middleware/error.middleware.js'
+import authRouter from './src/routes/auth.route.js'
+import { errorHandling } from './src/middleware/error.middleware.js'
 
 const app  = express()
 const PORT = 3000

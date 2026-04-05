@@ -1,0 +1,22 @@
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: Taiki
+      POSTGRES_PASSWORD: gres06723
+      POSTGRES_DB: safedb
+    volumes:
+     - pgdata:/var/lib/postgresql/data
+  
+  backend:
+    build: ./server
+    ports:
+     - "3000:3000"
+    depends_on:
+     - db
+    environment:
+      DATABASE_URL: postgresql://Taiki:gres06723@db:5432/safedb
+
+volumes:
+  pgdata:

@@ -1,6 +1,6 @@
 
 import z from 'zod'
-import { AppError } from '../utils/app.error'
+import { AppError } from '../utils/app.error.js'
 
 
 const signUpSchema = z.object({

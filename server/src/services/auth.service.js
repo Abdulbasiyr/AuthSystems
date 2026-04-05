@@ -1,10 +1,10 @@
 
 import bcrypt from 'bcrypt'
-import { createUser, findUserByEmail } from '../repositorys/auth.repository'
-import { createAccessToken, createRefreshToken } from '../utils/token.utils'
-import { resCookie } from '../utils/cookie.utils'
-import { validateLogin } from '../validation/auth.validation'
-import { AppError } from '../utils/app.error'
+import { createUser, findUserByEmail } from '../repositorys/auth.repository.js'
+import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
+import { resCookie } from '../utils/cookie.utils.js'
+import { validateLogin } from '../validation/auth.validation.js'
+import { AppError } from '../utils/app.error.js'
 
 const SALT_ROUNDS = 10
 
