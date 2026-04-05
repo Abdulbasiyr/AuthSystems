@@ -1,7 +1,8 @@
 
 export class AppError extends Error {
-  constructor(message, statusCode) {
-    super(message)
-    this.statusCode = statusCode
+  constructor(userMessage, statusCode, techMessage) {
+    this.userMessage = userMessage
+    this.statusCode  = statusCode
+    this.techMessage = techMessage
   }
 }

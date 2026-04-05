@@ -20,7 +20,7 @@ const loginSchema = z.object({
 })
 
 
-
+// validated Sign Up
 export function validateSignUp(data) {
   const parsed = signUpSchema.safeParse(data)
   if(!parsed.success) throw new AppError(parsed.error.issues[0].message || userMessageInput, 403)
@@ -29,6 +29,7 @@ export function validateSignUp(data) {
 }
 
 
+// validated Login
 export function validateLogin(data) {
   const parsed = loginSchema.safeParse(data)
   if(!parsed.success) throw new AppError(parsed.error.issues[0].message || userMessageInput, 403)
