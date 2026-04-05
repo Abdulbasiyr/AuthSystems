@@ -8,6 +8,7 @@ import { AppError } from '../utils/app.error.js'
 
 const SALT_ROUNDS = 10
 
+
 // service Sign Up
 export async function serviceSignUp(data) {
 
@@ -33,7 +34,7 @@ export async function serviceSignUp(data) {
     if(err?.code === 'P2002') {
       throw new AppError('User already exists', 401)
     }
-    throw err
+    throw new AppError('Sign up failed due to server error', 500)
   }
 
 }
@@ -63,7 +64,9 @@ export async function serviceLogin(data) {
     }
 
   } catch(err) {
-    throw err
+    if(err instanceof AppError) throw err
+
+    throw new AppError('Login failed due to server error', 500)
   }
 
 }

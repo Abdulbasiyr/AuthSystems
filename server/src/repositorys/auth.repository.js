@@ -1,5 +1,5 @@
 
-
+import { prisma } from "../../lib/prisma.js"
 
 export function createUser(data) {
   return prisma.user.create({ data, select: { id: true, name: true, email: true } })
