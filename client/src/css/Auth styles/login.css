@@ -37,7 +37,7 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 /* INPUT */
@@ -68,11 +68,15 @@
   justify-content: space-between;
   font-size: 13px;
   color: #9aa4b2;
+  user-select: none;
 }
 
 .forgot {
   color: #3b82f6;
   text-decoration: none;
+}
+.forgot:hover {
+  text-decoration: underline;
 }
 
 /* BUTTON */

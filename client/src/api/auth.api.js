@@ -2,9 +2,10 @@ import { baseRequestApi } from "./baseRequest.api";
 
 
 
-export function signUp(data) {
+export function signUpApi(data) {
 
-  return baseRequestApi('/signup', {
+  console.log(data)
+  return baseRequestApi('/auth/signup', {
     method: 'POST',
     body: JSON.stringify(data)
   })
@@ -12,9 +13,9 @@ export function signUp(data) {
 }
 
 
-export function login(data) {
+export function loginApi(data) {
 
-  return baseRequestApi('/signup', {
+  return baseRequestApi('/auth/login', {
     method: 'POST',
     body: JSON.stringify(data)
   })

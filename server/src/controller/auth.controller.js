@@ -1,7 +1,8 @@
 import { serviceLogin, serviceSignUp } from "../services/auth.service.js"
+import { validateLogin, validateSignUp } from "../validation/auth.validation.js"
 
 
-
+// controller Sign Up
 export async function controllerSignUp(req, res, next) {
 
   try {
@@ -16,7 +17,7 @@ export async function controllerSignUp(req, res, next) {
 }
 
 
-
+// controller Login
 export async function controllerLogin(req, res, next) {
 
   try {
