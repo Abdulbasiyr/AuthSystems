@@ -14,6 +14,7 @@ export class AppError extends Error {
     this.isOperational = isOperational
     this.errorCode     = errorCode
     this.status        = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+    this.timestamp     = new Date().toISOString()
 
     Error.captureStackTrace(this, this.constructor)
   }
