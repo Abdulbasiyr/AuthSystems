@@ -32,9 +32,9 @@ export async function serviceSignUp(data) {
 
   } catch(err) {
     if(err?.code === 'P2002') {
-      throw new AppError('User already exists', 401)
+      throw new AppError({userMessage: 'User already exists', techMessage: 'Email exists', statusCode: 409, isOperational: true})
     }
-    throw new AppError('Sign up failed due to server error', 500)
+    throw new AppError({userMessage: 'Sign up failed due to server error', techMessage: err.message, statusCode: 500, isOperational: false})
   }
 
 }
@@ -47,10 +47,10 @@ export async function serviceLogin(data) {
     
     const validatedData = validateLogin(data)
     const user = await findUserByEmail(validatedData.email)
-    if(!user) throw new AppError('Email or password invalid', 401)
+    if(!user) throw new AppError({userMessage: 'Email or password invalid', techMessage: 'Email invalid', statusCode: 401, isOperational: true})
 
-    const isValidPassword = bcrypt.compare(validatedData.password, user.password)
-    if(!isValidPassword) throw new AppError('Email or password invalid', 401)
+    const isValidPassword = await bcrypt.compare(validatedData.password, user.password)
+    if(!isValidPassword) throw new AppError({userMessage: 'Email or password invalid', techMessage: 'Password invalid', statusCode: 401, isOperational: true}) 
 
     const refreshToken = createRefreshToken(user)
     const accessToken = createAccessToken(user)
@@ -64,9 +64,7 @@ export async function serviceLogin(data) {
     }
 
   } catch(err) {
-    if(err instanceof AppError) throw err
-
-    throw new AppError('Login failed due to server error', 500)
+    throw new AppError({userMessage: 'Login failed, please try later', techMessage: 'Login failed due to server error', statusCode: 500, isOperational: false})
   }
 
 }
