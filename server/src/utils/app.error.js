@@ -7,7 +7,7 @@ export class AppError extends Error {
     isOperational = true,
     errorCode     = null
   }) {
-    super(techMessaage || userMessage) 
+    super(techMessage || userMessage) 
     this.userMessage   = userMessage 
     this.techMessage   = techMessage 
     this.statusCode    = statusCode 
@@ -56,7 +56,6 @@ export class AppError extends Error {
     this.statusCode    = statusCode
     this.isOperational = isOperational
     this.errorCode     = errorCode
-    this.status        = `${statusCode}`.startsWith('4') ? 'fail' : 'error'
     this.timestamp     = new Date().toISOString()
     this.requestId     = randomUUID()                   // NEW: unique ID per error instance
     this.context       = context                        // NEW: structured metadata
@@ -67,10 +66,9 @@ export class AppError extends Error {
 
   // ─── Serialization ────────────────────────────────────────────────────────
 
-  // What you send to the CLIENT (never expose internals)
+  // send to the CLIENT 
   toClientJSON() {
     return {
-      status:     this.status,
       statusCode: this.statusCode,
       errorCode:  this.errorCode,
       message:    this.userMessage,
@@ -79,11 +77,10 @@ export class AppError extends Error {
     }
   }
 
-  // What you send to your LOGGER (full detail)
+  // send to LOGGER (full detail)
   toLogJSON() {
     return {
       name:          this.name,
-      status:        this.status,
       statusCode:    this.statusCode,
       errorCode:     this.errorCode,
       userMessage:   this.userMessage,
@@ -106,7 +103,7 @@ export class AppError extends Error {
       errorCode:   'NOT_FOUND'
     })
   }
-  
+
 
   static badRequest(userMessage, context = {}) {
     return new AppError({
