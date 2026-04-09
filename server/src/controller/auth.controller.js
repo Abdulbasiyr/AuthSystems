@@ -1,4 +1,5 @@
 import { serviceLogin, serviceSignUp } from "../services/auth.service.js"
+import { resCookie } from "../utils/cookie.utils.js"
 import { validateLogin, validateSignUp } from "../validation/auth.validation.js"
 
 
@@ -9,7 +10,9 @@ export async function controllerSignUp(req, res, next) {
 
     const validatedData = validateSignUp(req.body)
     const user          = await serviceSignUp(validatedData)
-    res.status(201).json(user)
+    const {refreshToken, userData} = user
+    resCookie(res, refreshToken)
+    res.status(201).json(userData)
   } catch(err) {
     next(err)
   }
@@ -24,7 +27,9 @@ export async function controllerLogin(req, res, next) {
 
     const validatedData = validateLogin(req.body)
     const user          = await serviceLogin(validatedData)
-    res.status(200).json(user)
+    const {refreshToken, userData} = user
+    resCookie(res, refreshToken)
+    res.status(200).json(userData)
   } catch(err) {
     next(err)
   }
