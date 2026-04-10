@@ -184,7 +184,7 @@ export default function ResetPassword() {
                 <button
                   type="button"
                   className="back-link"
-                  onClick={() => window.location.href = '/login'}
+                  onClick={() => window.location.href = '/auth?mode=login'}
                 >
                   ← Вернуться к входу
                 </button>
@@ -295,10 +295,10 @@ export default function ResetPassword() {
           )}
         </div>
 
-        <div className="security-badge">
+        {/* <div className="security-badge">
           <span className="badge-icon">🛡️</span>
           <span className="badge-text">Защищено SSL шифрованием</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

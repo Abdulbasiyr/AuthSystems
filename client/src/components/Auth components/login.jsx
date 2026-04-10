@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 
 import "../../css/Auth styles/login.css";
@@ -64,9 +65,7 @@ const Login = () => {
               Запомнить меня
             </label>
 
-            <a href="/auth/forgot" className="forgot">
-              Забыли пароль?
-            </a>
+            <Link to='/auth/forgot' > <a className="forgot"> Забыли пароль? </a> </Link>
           </div>
 
           <button className="login-button" type="submit">
