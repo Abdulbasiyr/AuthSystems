@@ -64,7 +64,7 @@ const Login = () => {
               Запомнить меня
             </label>
 
-            <a href="/forgot" className="forgot">
+            <a href="/auth/forgot" className="forgot">
               Забыли пароль?
             </a>
           </div>
