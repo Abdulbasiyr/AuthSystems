@@ -1,5 +1,6 @@
 
 import "../css/body.css";
+import { Link } from "react-router-dom";
 
 const Main = () => {
   return (
@@ -24,13 +25,14 @@ const Main = () => {
           </p>
 
           <div className="hero-buttons">
-            <a href="/register" className="create-btn">
-              Создать аккаунт →
+            <a> 
+              <Link to="/auth?mode=signup"  className="create-btn">Создать аккаунт →</Link>
             </a>
 
-            <a href="/login" className="hero-login">
-              Войти →
+            <a> 
+              <Link to="/auth?mode=login" className="hero-login" > Войти → </Link> 
             </a>
+
           </div>
 
         </div>

@@ -11,9 +11,9 @@ function Header() {
         </div>
         <nav className="nav">
           <ul>
-            <li><Link to="/"          className="nav-link active" >Главная</Link></li>
-            <li><Link to="/about"     className="nav-link" >О нас</Link></li>
-            <li><Link to="/contact"   className="nav-link" >Контакты</Link></li>
+            <li className="nav-link active"> Главная </li>
+            <li className="nav-link"> О нас </li>
+            <li className="nav-link">  Контакты </li>
           </ul>
         </nav>
         <div className="auth-buttons">
