@@ -2,8 +2,6 @@
 import bcrypt from 'bcrypt'
 import { createUser, findUserByEmail } from '../repositorys/auth.repository.js'
 import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
-import { resCookie } from '../utils/cookie.utils.js'
-import { validateLogin } from '../validation/auth.validation.js'
 import { AppError } from '../utils/app.error.js'
 
 const SALT_ROUNDS = 10
@@ -21,20 +19,21 @@ export async function serviceSignUp(data) {
     
     const refreshToken = createRefreshToken(user)
     const accessToken = createAccessToken(user)
-    resCookie(refreshToken)
+
 
     return {
       id: user.id,
       name: user.name,
       email: user.email,
-      accessToken
+      accessToken,
+      refreshToken
     }
 
   } catch(err) {
     if(err?.code === 'P2002') {
-      throw new AppError({userMessage: 'User already exists', techMessage: 'Email exists', statusCode: 409, isOperational: true})
+      throw new AppError('User already exists','Email exists', 409, true)
     }
-    throw new AppError({userMessage: 'Sign up failed due to server error', techMessage: err.message, statusCode: 500, isOperational: false})
+    throw new AppError('Sign up failed due to server error', err.message, 500, false)
   }
 
 }
@@ -45,10 +44,10 @@ export async function serviceLogin(data) {
 
     
   const user = await findUserByEmail(data.email)
-  if(!user) throw new AppError({userMessage: 'Email or password invalid', techMessage: 'Email invalid', statusCode: 401, isOperational: true})
+  if(!user) throw new AppError('Email or password invalid', 'Email invalid', 401, true)
 
   const isValidPassword = await bcrypt.compare(data.password, user.password)
-  if(!isValidPassword) throw new AppError({userMessage: 'Email or password invalid', techMessage: 'Password invalid', statusCode: 401, isOperational: true}) 
+  if(!isValidPassword) throw new AppError('Email or password invalid', 'Password invalid', 401, true) 
 
   const refreshToken = createRefreshToken(user)
   const accessToken = createAccessToken(user)
