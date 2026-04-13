@@ -55,7 +55,7 @@ const Register = () => {
     // тут отправка на сервер
     try {
       const user = await signUpApi(form)
-      console.log(user)
+      setErrors({[user?.details.path]: user?.details.message})
     } catch(err) {
       console.log(err)
     }

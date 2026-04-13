@@ -8,6 +8,7 @@ export class AppError extends Error {
     this.userMessage   = userMessage
     this.techMessage   = options?.techMessage ?? null
     this.errorCode     = options?.errorCode ?? null
+    this.details       = options?.details ?? null
     this.isOperational = true
 
     Error.captureStackTrace(this, this.constructor)

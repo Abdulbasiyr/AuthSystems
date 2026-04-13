@@ -23,10 +23,11 @@ const loginSchema = z.object({
 export function validateSignUp(data) {
   const parsed = signUpSchema.safeParse(data)
   if(!parsed.success) {
-    const details = parsed.error.issues.map((issue) => ({
+    const result = parsed.error.issues.map((issue) => ({
       path: issue.path.join('.'),
       message: issue.message
     }))
+    const [details] = result
     throw new AppError('Some fields are filled in incorrectly', 400, {techMessage: parsed.error.issues[0].message ?? 'Signup validation failed', errorCode: 'VALIDATION_FAILED', details})
   } 
 
