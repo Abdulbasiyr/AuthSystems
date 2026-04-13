@@ -30,9 +30,12 @@ export async function serviceSignUp(data) {
     }
 
   } catch(err) {
+    if(err instanceof AppError) throw err
+
     if(err?.code === 'P2002') {
-      throw new AppError('User already exists', {techMessage: `Email: ${user.email} already exists`, errorCode: 'EMAIL_ALREADY_EXISTS'}, 409)
+      throw new AppError('User already exists', 409, {techMessage: `Email: ${email} already exists`, errorCode: 'EMAIL_ALREADY_EXISTS'})
     }
+
     throw new AppError('Failed to register a user. Please try again later', 500, {techMessage: err?.message || 'Unknown signup user', errorCode: 'SIGNUP_FAILED'})
   }
 

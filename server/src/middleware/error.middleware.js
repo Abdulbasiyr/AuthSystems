@@ -1,12 +1,12 @@
 
 
 export function errorHandling(err, req, res, next) {
-  console.log(err)
+  console.error(err)
   if(err.isOperational) {
-    return res.status(err.statusCode).json({ message: err.userMessage })
+    return res.status(err.statusCode).json({message: err.userMessage, errorCode: err.errorCode})
   }
-  return res.status(500).json({message: 'Something went wrong. Please try again later'})
-}
 
+  return res.status(err.statusCode ?? 500).json({message: err.userMessage ?? 'Something went wrong, please try again later', errorCode: err.errorCode ?? 'UNKNOWN_ERROR'})
+}
 
 
