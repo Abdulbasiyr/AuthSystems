@@ -3,8 +3,7 @@ import z from 'zod'
 import { AppError } from '../utils/app.error.js'
 
 
-const userMessageInput = 'Validation failed'
-const passwordRegex    = / ^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).+$ /;
+const passwordRegex    = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).+$/;
 const nameRegex        = /^[^<>/"'`]+$/
 
 
@@ -23,7 +22,13 @@ const loginSchema = z.object({
 // validated Sign Up
 export function validateSignUp(data) {
   const parsed = signUpSchema.safeParse(data)
-  if(!parsed.success) throw new AppError(parsed.error.issues[0].message || userMessageInput, 403)
+  if(!parsed.success) {
+    const details = parsed.error.issues.map((issue) => ({
+      path: issue.path.join('.'),
+      message: issue.message
+    }))
+    throw new AppError('Some fields are filled in incorrectly', 400, {techMessage: parsed.error.issues[0].message ?? 'Signup validation failed', errorCode: 'VALIDATION_FAILED', details})
+  } 
 
   return parsed.data
 }
@@ -32,7 +37,13 @@ export function validateSignUp(data) {
 // validated Login
 export function validateLogin(data) {
   const parsed = loginSchema.safeParse(data)
-  if(!parsed.success) throw new AppError(parsed.error.issues[0].message || userMessageInput, 403)
+  if(!parsed.success) {
+    const details = parsed.error.issues.map((issue) => ({
+      path: issue.path.join('.'),
+      message: issue.message
+    }))
+    throw new AppError('Some fields are filled in incorrectly', 400, {techMessage: parsed.error.issues[0].message ?? 'Login validation failed', errorCode: 'VALIDATION_FAILED', details})
+  } 
 
   return parsed.data
 }

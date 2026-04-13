@@ -25,13 +25,10 @@ const Main = () => {
           </p>
 
           <div className="hero-buttons">
-            <a> 
-              <Link to="/auth?mode=signup"  className="create-btn">Создать аккаунт →</Link>
-            </a>
 
-            <a> 
+              <Link to="/auth?mode=signup"  className="create-btn">Создать аккаунт →</Link>
+ 
               <Link to="/auth?mode=login" className="hero-login" > Войти → </Link> 
-            </a>
 
           </div>
 

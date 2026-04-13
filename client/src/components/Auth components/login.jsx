@@ -65,7 +65,7 @@ const Login = () => {
               Запомнить меня
             </label>
 
-            <Link to='/auth/forgot' > <a className="forgot"> Забыли пароль? </a> </Link>
+            <Link className="forgot" to='/auth/forgot' >  Забыли пароль? </Link> 
           </div>
 
           <button className="login-button" type="submit">
