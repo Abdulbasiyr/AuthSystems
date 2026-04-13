@@ -31,9 +31,9 @@ export async function serviceSignUp(data) {
 
   } catch(err) {
     if(err?.code === 'P2002') {
-      throw new AppError('User already exists','Email exists', 409, true)
+      throw new AppError('User already exists', {techMessage: `Email: ${user.email} already exists`, errorCode: 'EMAIL_ALREADY_EXISTS'}, 409)
     }
-    throw new AppError('Sign up failed due to server error', err.message, 500, false)
+    throw new AppError('Failed to register a user. Please try again later', 500, {techMessage: err?.message || 'Unknown signup user', errorCode: 'SIGNUP_FAILED'})
   }
 
 }
@@ -44,13 +44,13 @@ export async function serviceLogin(data) {
 
     
   const user = await findUserByEmail(data.email)
-  if(!user) throw new AppError('Email or password invalid', 'Email invalid', 401, true)
+  if(!user) throw new AppError('Email or password invalid', 401, {techMessage:`User with email ${data.email} not found`, errorCode: 'INVALID_CREDENTIALS'})
 
   const isValidPassword = await bcrypt.compare(data.password, user.password)
-  if(!isValidPassword) throw new AppError('Email or password invalid', 'Password invalid', 401, true) 
+  if(!isValidPassword) throw new AppError('Email or password invalid', 401, {techMessage: 'Invalid password', errorCode: 'INVALID_CREDENTIALS'})
 
   const refreshToken = createRefreshToken(user)
-  const accessToken = createAccessToken(user)
+  const accessToken  = createAccessToken(user)
 
   return {
     id: user.id,
@@ -59,6 +59,5 @@ export async function serviceLogin(data) {
     accessToken,
     refreshToken
   }
-
 
 }
