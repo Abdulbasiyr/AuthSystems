@@ -18,7 +18,7 @@ export async function baseRequestApi(path, options = {}) {
   if(!res.ok) {
     const error = new Error(data?.message ?? 'Network doesnt work, please try later')
     error.details = data?.details ?? null 
-    return error
+    throw error
   }
 
   return data

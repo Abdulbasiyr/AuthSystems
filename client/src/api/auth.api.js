@@ -13,7 +13,7 @@ export function signUpApi(data) {
 
 
 export function loginApi(data) {
-
+  
   return baseRequestApi('/auth/login', {
     method: 'POST',
     body: JSON.stringify(data)

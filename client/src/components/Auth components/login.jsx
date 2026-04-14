@@ -8,29 +8,65 @@ import { loginApi, signUpApi } from "../../api/auth.api";
 
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState(""); 
+
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [downError, setDownError] = useState('')
+
+  // простая валидация
+  const validate = () => {
+    const newErrors = {};
+
+    if (!form.email.includes("@")) {
+      newErrors.email = "Введите корректный email";
+    }
+
+    if (form.password.length < 1) {
+      newErrors.password = "Пароль обьязателен!";
+    }
+
+    return newErrors;
+  };
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
 
 
   async function loginRequest(e) {
     e.preventDefault(); 
-    setErrors('')
+    setErrors({})
+    setDownError('')
 
+    const validationErrors = validate();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
     // --- ВАЛИДАЦИЯ ---
-    if (!email.trim()) return setErrors("Email обязателен")
-    else if (!/\S+@\S+\.\S+/.test(email)) setErrors("Неверный формат email")
+    // if (!email.trim()) return setErrors("Email обязателен")
+    // else if (!/\S+@\S+\.\S+/.test(email)) setErrors("Неверный формат email")
 
-    if (!password.trim()) return setErrors("Пароль обязателен")
+    // if (!password.trim()) return setErrors("Пароль обязателен")
 
 
     try{
 
-      const user = await loginApi({ email, password });
-      setErrors(user?.message)
-      
+      const user = await loginApi(form);
+      console.log(user)
     } catch(err) {
-      setErrors(err?.message || 'Request failed, please try later')
+      setErrors({[err?.details?.path]: err?.details?.message})
+      setDownError(err.message ?? '')
     }
 
   }
@@ -44,20 +80,23 @@ const Login = () => {
         <form className="login-form" onSubmit={loginRequest}>
           <input
             type="email"
+            name="email"
             placeholder="Email"
             className="input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={form.email}
+            onChange={handleChange}
           />
+          {errors.email && <p className="error" style={{color: 'red'}} >{errors.email}</p>}
 
           <input
             type="password"
+            name="password"
             placeholder="Пароль"
             className="input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={form.password}
+            onChange={handleChange}
           />
-          
+          {errors.password && <p className="error" style={{color: 'red'}} >{errors.password}</p>}
 
           <div className="login-options">
             <label>
@@ -72,7 +111,7 @@ const Login = () => {
             Войти
           </button>
 
-          <p style={{ color: "red", fontSize: "15px" }}>{errors}</p>
+          <p className="error" style={{color: 'red'}} >{downError}</p>
         </form>
 
         <p className="register-link">

@@ -1,6 +1,6 @@
 
 
-export function resCookie(token) {
+export function resCookie(res, token) {
   res.cookie('refreshToken', token, {
     httpOnly: true,
     secure: false,

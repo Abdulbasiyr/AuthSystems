@@ -15,7 +15,7 @@ export async function serviceSignUp(data) {
   try {
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-    const user = await createUser({name, email, hashedPassword})
+    const user = await createUser({name, email, password: hashedPassword})
     
     const refreshToken = createRefreshToken(user)
     const accessToken = createAccessToken(user)

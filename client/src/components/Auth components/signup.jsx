@@ -12,6 +12,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [downError, setDownError] = useState('')
 
   // простая валидация
   const validate = () => {
@@ -42,6 +43,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({})
+    setDownError('')
 
     const validationErrors = validate();
 
@@ -50,14 +52,18 @@ const Register = () => {
       return;
     }
 
-    setErrors({});
 
     // тут отправка на сервер
     try {
       const user = await signUpApi(form)
-      setErrors({[user?.details.path]: user?.details.message})
+      console.log(user)
+      setForm({name: '', email: '', password: ''})
     } catch(err) {
-      console.log(err)
+      if (err?.details && Object.keys(err.details).length > 0) {
+        return setErrors({[err?.details?.path]: err?.details?.message})
+      }
+
+      setDownError(err.message)
     }
   };
 
@@ -104,6 +110,8 @@ const Register = () => {
           <button className="register-button" type="submit">
             Зарегистрироваться
           </button>
+
+          <p className="error" style={{color: 'red'}} >{downError}</p>
         </form>
 
         <p className="login-link">
