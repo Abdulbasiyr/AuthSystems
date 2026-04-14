@@ -53,7 +53,7 @@ const Register = () => {
     }
 
 
-    // тут отправка на сервер
+    // отправка на сервер
     try {
       const user = await signUpApi(form)
       console.log(user)
