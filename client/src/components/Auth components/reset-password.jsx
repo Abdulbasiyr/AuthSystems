@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import '../../css/Auth styles/resetPassword.css';
+import { useState } from 'react';
+import '../../css/Auth styles/forgotAndResetPassword.css';
 
 export default function ResetPassword() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -13,6 +13,7 @@ export default function ResetPassword() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const passwordRegex    = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).+$/;
 
   const showAlert = (message, type = 'error') => {
     if (type === 'error') {
@@ -25,8 +26,7 @@ export default function ResetPassword() {
   };
 
   const getSubtitle = () => {
-    if (currentStep === 1) return 'Введите email для восстановления доступа';
-    if (currentStep === 2) return 'Введите код подтверждения из письма';
+    if (currentStep === 1) return 'Введите код подтверждения из письма';
     return 'Установите новый пароль';
   };
 
@@ -59,7 +59,7 @@ export default function ResetPassword() {
 
     setLoading(true);
     setTimeout(() => {
-      setCurrentStep(3);
+      setCurrentStep(2);
       setLoading(false);
     }, 1000);
   };
@@ -109,18 +109,19 @@ export default function ResetPassword() {
     setConfirmPassword('');
     setError('');
     setSuccess('');
-    setUserEmail('');
   };
 
   const getPasswordStrength = () => {
     if (!newPassword) return null;
-    if (newPassword.length < 8) return 'weak';
-    if (newPassword.length < 12) return 'medium';
+    if (newPassword.length > 100) return 'invalid'
+    if (newPassword.length < 10 && !passwordRegex.test(newPassword))  return 'weak'; 
+    if (newPassword.length > 10 && !passwordRegex.test(newPassword)) return 'medium';
     return 'strong';
   };
 
   const getPasswordStrengthText = () => {
     const strength = getPasswordStrength();
+    if  (strength === 'invalid') return 'Слишком длинный пароль'
     if (strength === 'weak') return 'Слабый пароль';
     if (strength === 'medium') return 'Средний пароль';
     return 'Сильный пароль';
@@ -133,7 +134,6 @@ export default function ResetPassword() {
 
       <div className="container">
         <div className="card">
-          {error && <div className="alert alert-error">{error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
 
           <div className="header">
@@ -144,56 +144,18 @@ export default function ResetPassword() {
 
           <div className="progress-steps">
             <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
-              <div className="step-number">1</div>
-              <div className="step-label">Email</div>
-              <div className="step-line"></div>
-            </div>
-            <div className={`step ${currentStep === 2 ? 'active' : currentStep > 2 ? 'completed' : ''}`}>
               <div className="step-number">2</div>
               <div className="step-label">Код</div>
               <div className="step-line"></div>
             </div>
-            <div className={`step ${currentStep === 3 ? 'active' : ''}`}>
+            <div className={`step ${currentStep === 2 ? 'active' : ''}`}>
               <div className="step-number">3</div>
               <div className="step-label">Пароль</div>
             </div>
           </div>
 
-          {/* Form 1: Email */}
-          {currentStep === 1 && (
-            <form className="form" onSubmit={handleEmailSubmit}>
-              <div className="form-group">
-                <label htmlFor="email">Email адрес</label>
-                <div className="input-wrapper">
-                  <span className="input-icon">✉️</span>
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={loading}
-                    required
-                  />
-                </div>
-              </div>
-              <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? 'Отправка...' : 'Отправить код'}
-              </button>
-              <div className="form-footer">
-                <button
-                  type="button"
-                  className="back-link"
-                  onClick={() => window.location.href = '/auth?mode=login'}
-                >
-                  ← Вернуться к входу
-                </button>
-              </div>
-            </form>
-          )}
-
           {/* Form 2: Code Verification */}
-          {currentStep === 2 && (
+          {currentStep === 1 && (
             <form className="form" onSubmit={handleCodeSubmit}>
               <div className="form-group">
                 <label htmlFor="code">Код подтверждения</label>
@@ -211,13 +173,14 @@ export default function ResetPassword() {
                     required
                   />
                 </div>
-                <p className="input-hint">Проверьте папку спама, если письмо не пришло</p>
               </div>
               <button type="submit" className="submit-btn" disabled={loading}>
                 {loading ? 'Проверка...' : 'Подтвердить код'}
               </button>
               <div className="form-footer">
-                <button type="button" className="back-link" onClick={goBack}>
+                {error && <div className="alert alert-error">{error}</div>}
+
+                <button type="button" className="back-link" onClick={() => window.location.href = '/auth/forgot-password'}>
                   ← Изменить email
                 </button>
               </div>
@@ -225,7 +188,7 @@ export default function ResetPassword() {
           )}
 
           {/* Form 3: Password Reset */}
-          {currentStep === 3 && (
+          {currentStep === 2 && (
             <form className="form" onSubmit={handlePasswordSubmit}>
               <div className="form-group">
                 <label htmlFor="newPassword">Новый пароль</label>
@@ -287,12 +250,15 @@ export default function ResetPassword() {
                 {loading ? 'Изменение...' : 'Изменить пароль'}
               </button>
               <div className="form-footer">
+                {error && <div className="alert alert-error">{error}</div>}
+
                 <button type="button" className="back-link" onClick={resetAll}>
                   ← Вернуться к входу
                 </button>
               </div>
             </form>
           )}
+
         </div>
 
         {/* <div className="security-badge">

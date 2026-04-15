@@ -1,21 +1,16 @@
 
 import { useState } from "react";
-import '../../css/Auth styles/forgotPassword.css'
+import '../../css/Auth styles/forgotAndResetPassword.css'
 
 
 export default function ForgotPassword() {
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [email, setEmail]             = useState('');
+  const [error, setError]             = useState('');
+  const [success, setSuccess]         = useState('');
+  const [loading, setLoading]         = useState(false);
+  const [userEmail, setUserEmail]     = useState('');
 
   const showAlert = (message, type = 'error') => {
     if (type === 'error') {
@@ -53,7 +48,6 @@ export default function ForgotPassword() {
   const goBack = () => {
     setCurrentStep(1);
     setEmail(userEmail);
-    setCode('');
     setError('');
     setSuccess('');
   };

@@ -10,7 +10,7 @@ const nameRegex        = /^[^<>/"'`]+$/
 const signUpSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(50, 'Name is too long').regex(nameRegex, 'Invalid name'),
   email: z.string().trim().toLowerCase().email('Please, provide a valid email'),
-  password: z.string().trim().min(8, 'Password is too short').max(100, 'Password is too long').regex(passwordRegex, 'Password must contain a capital letter, number, and one symbol')
+  password: z.string().trim().min(10, 'Password is too short').max(100, 'Password is too long').regex(passwordRegex, 'Password must contain a capital letter, number, and one symbol')
 })
 
 const loginSchema = z.object({
