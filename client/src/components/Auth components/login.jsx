@@ -104,7 +104,7 @@ const Login = () => {
               Запомнить меня
             </label>
 
-            <Link className="forgot" to='/auth/forgot' >  Забыли пароль? </Link> 
+            <Link className="forgot" to='/auth/forgot-password' >  Забыли пароль? </Link> 
           </div>
 
           <button className="login-button" type="submit">
