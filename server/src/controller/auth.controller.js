@@ -35,3 +35,22 @@ export async function controllerLogin(req, res, next) {
   }
 
 }
+
+
+// { Forgot & Reset Passwords logic }
+
+// forgot password
+export async function controllerForgotPassword(req, res, next) {
+
+  
+
+}
+
+
+
+// reset password 
+export async function controllerResetPassword(req, res, next) {
+
+  
+
+}
