@@ -18,6 +18,9 @@ const loginSchema = z.object({
   password: z.string().trim().min(1, 'Password required')
 })
 
+const emailSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Please, provide a valid email')
+})
 
 // validated Sign Up
 export function validateSignUp(data) {
@@ -48,4 +51,13 @@ export function validateLogin(data) {
   } 
 
   return parsed.data
+}
+
+
+export function validateEmail(email) {
+  const parsed = emailSchema.safeParse(email)
+  if(!parsed.success) {
+    const details = {path: parsed.error.issues[0].path, message: parsed.error.issues[0].message}
+    throw new AppError('Please, provide a valied email', 400, {techMessage: parsed.error.issues[0].message ?? 'Check email failed', errorCode: 'VALIDATION_FAILED', details})
+  }
 }

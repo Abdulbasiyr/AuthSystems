@@ -64,3 +64,22 @@ export async function serviceLogin(data) {
   }
 
 }
+
+
+
+// { service for Forgot, Reset Passwords }
+
+// Forgot password 
+export async function serviceForgotPassword(email) {
+
+  
+
+}
+
+
+// Reset password 
+export async function serviceResetPassword(email) {
+
+  
+
+}
