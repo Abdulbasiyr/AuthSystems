@@ -17,6 +17,5 @@ export function createPasswordReset(data) {
 
 //clear PasswordReset
 export function clearPasswordReset(userId) {
-  console.log('userId ', userId)
   return prisma.passwordReset.deleteMany({ where: {userId}})
 }

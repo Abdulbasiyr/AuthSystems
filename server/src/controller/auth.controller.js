@@ -12,6 +12,7 @@ export const controllerSignUp = catchAsync(async (req, res) => {
 
   const validatedData = validateSignUp(req.body)
   const user          = await serviceSignUp(validatedData)
+  console.log(user)
   const {refreshToken, userData} = user
   resCookie(res, refreshToken)
   res.status(201).json(userData)
@@ -39,8 +40,9 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
 
   const validatedEmail = validateEmail(req.body)
   const {token, code}  = await serviceForgotPassword(validatedEmail.email)
+  console.log('email ', validatedEmail)
 
-  await sendEmail({email: validateEmail.email, token, code})
+  await sendEmail({email: validatedEmail.email, token, code})
   res.status(200)
 
 }) 
