@@ -18,12 +18,15 @@ model User {
 }
 
 model PasswordReset {
-  id         Int     @id @default(autoincrement())
+  id         Int       @id @default(autoincrement()) 
   userId     Int
-  user      @
+  user       User      @relation(fields: [userId], reference: [id], onDelete: Carcade)
   tokenHash  String
   codeHash   String
   expiresAt  DateTime
-  used       Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  used       Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  @@index([tokenHash])
+  @@index([userId])
 }

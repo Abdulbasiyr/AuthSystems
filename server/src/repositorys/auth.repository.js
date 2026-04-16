@@ -8,3 +8,14 @@ export function createUser(data) {
 export function findUserByEmail(email) {
   return prisma.user.findUnique({ where: {email}, select: { id: true, name: true, email: true, password: true } })
 }
+
+
+// create PasswordReset
+export function createResetPassword(data) {
+  return prisma.passwordReset.create({ data })
+}
+
+//clear PasswordReset
+export function clearPasswordReset(userId) {
+  return prisma.passwordReset.deleteMany({ where: {userId}})
+}

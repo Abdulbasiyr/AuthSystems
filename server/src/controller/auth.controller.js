@@ -1,3 +1,6 @@
+
+import crypto from 'crypto'
+
 import { serviceForgotPassword, serviceLogin, serviceSignUp } from "../services/auth.service.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
@@ -36,6 +39,7 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
 
   const validatedEmail = validateEmail(req.body)
   const result         = await serviceForgotPassword(validatedEmail)
+
 
 }) 
 
