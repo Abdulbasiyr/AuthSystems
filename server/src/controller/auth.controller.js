@@ -5,6 +5,7 @@ import { serviceForgotPassword, serviceLogin, serviceSignUp } from "../services/
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
 import { validateEmail, validateLogin, validateSignUp } from "../validation/auth.validation.js"
+import { sendEmail } from '../utils/sendEmail.js'
 
 
 // controller Sign Up
@@ -38,8 +39,10 @@ export const controllerLogin = catchAsync(async (req, res) => {
 export const controllerForgotPassword = catchAsync(async (req, res) => {
 
   const validatedEmail = validateEmail(req.body)
-  const result         = await serviceForgotPassword(validatedEmail)
+  const {token, code}  = await serviceForgotPassword(validatedEmail.email)
 
+  await sendEmail({email: validateEmail.email, token, code})
+  res.status(200)
 
 }) 
 
