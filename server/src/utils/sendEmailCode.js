@@ -2,6 +2,7 @@
 
 import "dotenv/config";
 import { Resend } from "resend";
+import { AppError } from "./app.error.js";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const from = process.env.EMAIL_FROM || "Acme <onboarding@resend.dev>";

@@ -23,3 +23,14 @@ export function loginApi(data) {
 
 
 
+// { RESET PASSWORD API REQUEST }
+
+// forgot password
+export function forgotPasswordApi(email) {
+
+  return baseRequestApi('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify(email)
+  })
+
+}

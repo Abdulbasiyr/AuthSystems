@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import '../../css/Auth styles/forgotAndResetPassword.css'
+import { forgotPasswordApi } from "../../api/auth.api.js";
 
 
 export default function ForgotPassword() {
@@ -10,7 +11,6 @@ export default function ForgotPassword() {
   const [error, setError]             = useState('');
   const [success, setSuccess]         = useState('');
   const [loading, setLoading]         = useState(false);
-  const [userEmail, setUserEmail]     = useState('');
 
   const showAlert = (message, type = 'error') => {
     if (type === 'error') {
@@ -26,7 +26,7 @@ export default function ForgotPassword() {
     if (currentStep === 1) return 'Введите email для восстановления доступа';
   };
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -36,21 +36,20 @@ export default function ForgotPassword() {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setUserEmail(email);
+
+    try {
+      await forgotPasswordApi({email})
       showAlert('Код подтверждения отправлен на вашу почту', 'success');
-      setCurrentStep(2);
       setLoading(false);
-    }, 1000);
+    } catch(err) {
+      showAlert('Код подтверждения отправлен на вашу почту', 'success');
+      setEmail('')
+      setLoading(false);
+      
+    }
+
   };
 
-
-  const goBack = () => {
-    setCurrentStep(1);
-    setEmail(userEmail);
-    setError('');
-    setSuccess('');
-  };
 
   return(
     <div className="reset-password-container">
@@ -107,20 +106,6 @@ export default function ForgotPassword() {
                 </button>
               </div>
             </form>
-          )}
-
-          {/* Form 2: Code Verification */}
-          {currentStep === 2 && (
-          <>
-            <p className="input-hint">Проверьте папку спама, если письмо не пришло</p>
-
-            <div className="form-footer">
-              <button type="button" className="back-link" onClick={goBack}>
-                ← Изменить email
-              </button>
-            </div>
-          </>
-
           )}
 
         </div>

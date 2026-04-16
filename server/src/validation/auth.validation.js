@@ -60,4 +60,6 @@ export function validateEmail(email) {
     const details = {path: parsed.error.issues[0].path, message: parsed.error.issues[0].message}
     throw new AppError('Please, provide a valied email', 400, {techMessage: parsed.error.issues[0].message ?? 'Check email failed', errorCode: 'VALIDATION_FAILED', details})
   }
+
+  return parsed.data
 }

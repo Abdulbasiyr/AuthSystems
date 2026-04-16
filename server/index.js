@@ -9,11 +9,11 @@ import { errorHandling } from './src/middleware/error.middleware.js'
 const app  = express()
 const PORT = 3001
 
-app.use(express.json())
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
 }))
+app.use(express.json())
 app.use(cookieParser())
 
 

@@ -1,11 +1,10 @@
 
-import crypto from 'crypto'
 
 import { serviceForgotPassword, serviceLogin, serviceSignUp } from "../services/auth.service.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
 import { validateEmail, validateLogin, validateSignUp } from "../validation/auth.validation.js"
-import { sendEmail } from '../utils/sendEmail.js'
+import { sendEmail } from '../utils/sendEmailCode.js'
 
 
 // controller Sign Up

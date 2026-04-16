@@ -1,6 +1,8 @@
 
 import bcrypt from 'bcrypt'
-import { clearPasswordReset, createPasswordReset, createUser, findUserByEmail, removePasswordReset } from '../repositorys/auth.repository.js'
+import crypto from 'crypto'
+
+import { clearPasswordReset, createPasswordReset, createUser, findUserByEmail } from '../repositorys/auth.repository.js'
 import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
 import { AppError } from '../utils/app.error.js'
 

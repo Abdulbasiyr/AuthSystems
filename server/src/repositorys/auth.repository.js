@@ -11,11 +11,12 @@ export function findUserByEmail(email) {
 
 
 // create PasswordReset
-export function createResetPassword(data) {
+export function createPasswordReset(data) {
   return prisma.passwordReset.create({ data })
 }
 
 //clear PasswordReset
 export function clearPasswordReset(userId) {
+  console.log('userId ', userId)
   return prisma.passwordReset.deleteMany({ where: {userId}})
 }
