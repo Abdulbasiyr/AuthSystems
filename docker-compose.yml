@@ -8,6 +8,13 @@ services:
       POSTGRES_DB: safedb
     volumes:
      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    restart: always
   
   backend:
     build: ./server
@@ -15,12 +22,29 @@ services:
      - "3001:3001"
     depends_on:
      - db
+     - redis
     volumes:
      - ./server:/app
     environment:
       DATABASE_URL: postgresql://Taiki:gres06723@db:5432/safedb
+      REDIS_URL: redis://redis:6379
     working_dir: /app
     command: npm run dev
+    restart: always
+
+  worker:
+    build: ./server
+    working_dir: /app
+    command: node worker.js
+    volumes:
+      - ./server:/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_URL: postgresql://Taiki:gres06723@db:5432/safedb
+      REDIS_URL: redis://redis:6379
+    restart: always                                                                                                                                                          
 
   frontend:
     build: ./client
