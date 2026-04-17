@@ -2,41 +2,42 @@
 import nodemailer from "nodemailer"
 import 'dotenv/config'
 
-import { AppError } from "../utils/AppError.js"
+import { AppError } from "../utils/app.error.js"
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
+    user: process.env.EMAIL_FROM,
     pass: process.env.EMAIL_PASS // App Password
   }
 })
 
-export async function sendEmail({ email, token, code }) {
+export async function sendEmail(user) {
   try {
-    if (!email || !token || !code) {
-      throw new AppError("Invalid email payload", 400)
+    console.log('send email start')
+    if (!user.email || !user.token || !user.code) {
+      throw new AppError("Invalid email payload", 400, {techMessage: 'One of data is not for send code', errorCode: 'EMAIL_SEND_FAILED'})
     }
 
-    const url = `${process.env.CLIENT_URL}/reset-password?token=${encodeURIComponent(token)}`
+    const url = `${process.env.RESET_PASSWORD_URL}?token=${encodeURIComponent(user.token)}`
 
     const info = await transporter.sendMail({
-      from: `Auth App <${process.env.EMAIL_USER}>`,
-      to: email,
+      from: `Auth App <${process.env.EMAIL_FROM}>`,
+      to: user.email,
       subject: "Reset your password",
       html:`
         <h2>Password Reset</h2>
-        <p>Your code: <b>${code}</b></p>
-        <p><a href="${url}">Reset Password</a></p>
-        <p>If you didn’t request this — ignore</p>
+        <h2>Your code: <b>${user.code}</b></h2>
+        <button><a href="${url}">Reset Password</a></button>
+        <h3>If you didn’t request this — ignore</h3>
       `
     })
 
     return info
 
   } catch (err) {
-    throw new AppError("Email send failed", 500, {
-      techMessage: err.message,
+    throw new AppError("Something went wrong. Plesage try again later", 500, {
+      techMessage: err?.message,
       errorCode: "EMAIL_SEND_FAILED"
     })
   }

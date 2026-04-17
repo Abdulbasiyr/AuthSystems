@@ -35,15 +35,15 @@ export const controllerLogin = catchAsync(async (req, res) => {
 
 // { Forgot & Reset Passwords logic }
 
-// forgot password
+// forgot password service
 export const controllerForgotPassword = catchAsync(async (req, res) => {
 
   const validatedEmail = validateEmail(req.body)
-  const {token, code}  = await serviceForgotPassword(validatedEmail.email)
-  console.log('email ', validatedEmail)
+  const data           = await serviceForgotPassword(validatedEmail.email)
+  if(!data) res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
-  await sendEmail({email: validatedEmail.email, token, code})
-  res.status(200)
+  const info = await sendEmail({email: validatedEmail.email, token: data.token, code: data.code})
+  res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
 }) 
 

@@ -38,14 +38,14 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      await forgotPasswordApi({email})
-      showAlert('Код подтверждения отправлен на вашу почту', 'success');
-      setLoading(false);
-    } catch(err) {
-      showAlert('Код подтверждения отправлен на вашу почту', 'success');
+      const result = await forgotPasswordApi({email})
+      console.log('start')
+      showAlert(result?.message, 'success');
       setEmail('')
       setLoading(false);
-      
+    } catch(err) {
+      showAlert(err?.message || 'Something went wrong. Please try again later', 'error')
+      setLoading(false);
     }
 
   };

@@ -3,7 +3,6 @@ import '../../css/Auth styles/forgotAndResetPassword.css';
 
 export default function ResetPassword() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -12,10 +11,9 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
   const passwordRegex    = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).+$/;
 
-  const showAlert = (message, type = 'error') => {
+  const showAlertReset = (message, type = 'error') => {
     if (type === 'error') {
       setError(message);
       setTimeout(() => setError(''), 4000);
@@ -30,30 +28,13 @@ export default function ResetPassword() {
     return 'Установите новый пароль';
   };
 
-  const handleEmailSubmit = (e) => {
-    e.preventDefault();
-    setError('');
-
-    if (!email.trim()) {
-      showAlert('Пожалуйста, введите email', 'error');
-      return;
-    }
-
-    setLoading(true);
-    setTimeout(() => {
-      setUserEmail(email);
-      showAlert('Код подтверждения отправлен на вашу почту', 'success');
-      setCurrentStep(2);
-      setLoading(false);
-    }, 1000);
-  };
 
   const handleCodeSubmit = (e) => {
     e.preventDefault();
     setError('');
 
     if (!code || code.length !== 6) {
-      showAlert('Пожалуйста, введите 6-значный код', 'error');
+      showAlertReset('Пожалуйста, введите 6-значный код', 'error');
       return;
     }
 
@@ -69,23 +50,23 @@ export default function ResetPassword() {
     setError('');
 
     if (!newPassword) {
-      showAlert('Пожалуйста, введите новый пароль', 'error');
+      showAlertReset('Пожалуйста, введите новый пароль', 'error');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      showAlert('Пароли не совпадают', 'error');
+      showAlertReset('Пароли не совпадают', 'error');
       return;
     }
 
     if (newPassword.length < 8) {
-      showAlert('Пароль должен быть не менее 8 символов', 'error');
+      showAlertReset('Пароль должен быть не менее 8 символов', 'error');
       return;
     }
 
     setLoading(true);
     setTimeout(() => {
-      showAlert('Пароль успешно изменён!', 'success');
+      showAlertReset('Пароль успешно изменён!', 'success');
       setTimeout(() => {
         resetAll();
       }, 2000);
@@ -93,13 +74,6 @@ export default function ResetPassword() {
     }, 1000);
   };
 
-  const goBack = () => {
-    setCurrentStep(1);
-    setEmail(userEmail);
-    setCode('');
-    setError('');
-    setSuccess('');
-  };
 
   const resetAll = () => {
     setCurrentStep(1);
