@@ -1,6 +1,14 @@
+
+import { Worker } from "bullmq";
 import { sendEmail } from "../emails/sendEmailCode";
+import { redis } from "../configs/redis";
 
 
-export async function HandleEmailJob(job) {
-  if(job.type === 'RESET_PASSWORD') await sendEmail(job.data)
-}
+export const emailWorker = new Worker('emailQueue', async (job) => {
+
+  const {email, token, code} = job.data
+  await sendEmail({email, token, code})
+
+}, {
+  connection: redis
+})

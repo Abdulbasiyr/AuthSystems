@@ -4,8 +4,16 @@ import { serviceForgotPassword, serviceLogin, serviceSignUp } from "../services/
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
 import { validateEmail, validateLogin, validateSignUp } from "../validation/auth.validation.js"
-import { sendEmail } from '../emails/sendEmailCode.js'
-import { redis } from "../configs/redis.js"
+import { emailQueue } from "../workers/email.queue.js"
+
+
+const QUEUE_OPTIONS = {
+  attempts: 3,
+  backoff: {
+    type: 'exponential',
+    delay: 5000
+  }
+}
 
 
 // controller Sign Up
@@ -40,10 +48,16 @@ export const controllerLogin = catchAsync(async (req, res) => {
 export const controllerForgotPassword = catchAsync(async (req, res) => {
 
   const parsedEmail = validateEmail(req.body)
-  const data           = await serviceForgotPassword(validatedEmail.email)
-  if(!data) return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
+  const dataService = await serviceForgotPassword(parsedEmail.email)
+  if(!dataService) return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
-  const info = await redis.Lpush('emailQueue', JSON.stringify({email: parsedEmail.email, token: data.token, code: data.code}))
+  const data = {
+    email: parsedEmail.email,
+    token: dataService.token,
+    code: dataService.code
+  }
+
+  const info = await emailQueue.add('emailQueue', data, QUEUE_OPTIONS)
   return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
 }) 
