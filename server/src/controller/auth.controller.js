@@ -4,7 +4,8 @@ import { serviceForgotPassword, serviceLogin, serviceSignUp } from "../services/
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
 import { validateEmail, validateLogin, validateSignUp } from "../validation/auth.validation.js"
-import { sendEmail } from '../utils/sendEmailCode.js'
+import { sendEmail } from '../emails/sendEmailCode.js'
+import { redis } from "../configs/redis.js"
 
 
 // controller Sign Up
@@ -38,11 +39,11 @@ export const controllerLogin = catchAsync(async (req, res) => {
 // forgot password controller
 export const controllerForgotPassword = catchAsync(async (req, res) => {
 
-  const validatedEmail = validateEmail(req.body)
+  const parsedEmail = validateEmail(req.body)
   const data           = await serviceForgotPassword(validatedEmail.email)
   if(!data) return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
-  const info = await sendEmail({email: validatedEmail.email, token: data.token, code: data.code})
+  const info = await redis.Lpush('emailQueue', JSON.stringify({email: parsedEmail.email, token: data.token, code: data.code}))
   return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
 }) 

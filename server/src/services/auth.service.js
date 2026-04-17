@@ -75,6 +75,7 @@ export async function serviceLogin(data) {
 
 // { service for Forgot, Reset Passwords }
 
+// fotgot password service
 export async function serviceForgotPassword(email) {
   
   try {
@@ -94,6 +95,7 @@ export async function serviceForgotPassword(email) {
     await createPasswordReset({userId: user.id, tokenHash, codeHash, expiresAt})
 
     return {
+      email: user.email,
       token,
       code
     }
