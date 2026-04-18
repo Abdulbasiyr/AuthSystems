@@ -34,3 +34,25 @@ export function forgotPasswordApi(email) {
   })
 
 }
+
+
+// verify reset code
+export function forgotPasswordApi(code) {
+
+  return baseRequestApi('/auth/verify-reset-code', {
+    method: 'POST',
+    body: JSON.stringify(code)
+  })
+
+}
+
+
+// reset password
+export function forgotPasswordApi(password) {
+
+  return baseRequestApi('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify(password)
+  })
+
+}

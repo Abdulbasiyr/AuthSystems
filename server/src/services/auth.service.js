@@ -5,6 +5,8 @@ import crypto from 'crypto'
 import { clearPasswordReset, createPasswordReset, createUser, findUserByEmail } from '../repositorys/auth.repository.js'
 import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
 import { AppError } from '../utils/app.error.js'
+import { authAttempts } from '../middleware/authAttempts.middleware.js'
+import { redis } from '../configs/redis.js'
 
 const SALT_ROUNDS = 10
 const RESET_TTL   = 10 * 60 * 1000
@@ -56,10 +58,15 @@ export async function serviceLogin(data) {
   if(!user) throw new AppError('Email or password invalid', 401, {techMessage:`User with email ${data.email} not found`, errorCode: 'INVALID_CREDENTIALS'})
 
   const isValidPassword = await bcrypt.compare(data.password, user.password)
-  if(!isValidPassword) throw new AppError('Email or password invalid', 401, {techMessage: 'Invalid password', errorCode: 'INVALID_CREDENTIALS'})
+  if(!isValidPassword) {
+    await authAttempts(user.email)
+    throw new AppError('Email or password invalid', 401, {techMessage: 'Invalid password', errorCode: 'INVALID_CREDENTIALS'})
+  }
+  redis.del(`auth:attempts:${user.email}`)
 
   const refreshToken = createRefreshToken(user)
   const accessToken  = createAccessToken(user)
+
 
   return {
     id: user.id,
@@ -107,9 +114,18 @@ export async function serviceForgotPassword(email) {
 }
 
 
+// service verify code
+export async function serviceVerifyCode(code) {
+
+  
+
+}
+
+
 // Reset password 
 export async function serviceResetPassword(email) {
 
-  
+  const user = await findUserByEmail(email)
+  if(!user) throw new AppError()
 
 }
