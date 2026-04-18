@@ -1,6 +1,6 @@
 
 import {Queue} from 'bullmq'
-import { redis } from '../configs/redis'
+import { redis } from '../configs/redis.js'
 
 export const emailQueue = new Queue('emailQueue', {
   connection: redis,
@@ -9,7 +9,7 @@ export const emailQueue = new Queue('emailQueue', {
     backoff: {
       type: 'exponential',
       delay: 5000
-    }
+    },
+    removeOnComplete: true
   },
-  removeOnComplete: true
 })

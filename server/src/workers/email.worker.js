@@ -1,7 +1,7 @@
 
 import { Worker } from "bullmq";
-import { sendEmail } from "../emails/sendEmailCode";
-import { redis } from "../configs/redis";
+import { sendEmail } from "../emails/sendEmailCode.js";
+import { redis } from "../configs/redis.js";
 
 
 new Worker('emailQueue', async (job) => {

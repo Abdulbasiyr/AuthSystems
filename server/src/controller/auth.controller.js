@@ -49,7 +49,7 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
     code: dataService.code
   }
 
-  const info = await emailQueue.add('emailQueue', data, { delay: 500 })
+  await emailQueue.add('emailQueue', data, { delay: 500 })
   return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
 }) 
