@@ -4,11 +4,16 @@ import { sendEmail } from "../emails/sendEmailCode";
 import { redis } from "../configs/redis";
 
 
-export const emailWorker = new Worker('emailQueue', async (job) => {
+new Worker('emailQueue', async (job) => {
 
   const {email, token, code} = job.data
   await sendEmail({email, token, code})
 
 }, {
-  connection: redis
+  connection: redis,
+  concurrency: 2,
+  limiter: {
+    max: 2,
+    duration: 10000
+  }
 })
