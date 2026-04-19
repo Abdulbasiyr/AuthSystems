@@ -37,7 +37,7 @@ export function forgotPasswordApi(email) {
 
 
 // verify reset code
-export function forgotPasswordApi(code) {
+export function verifyCodeApi(code) {
 
   return baseRequestApi('/auth/verify-reset-code', {
     method: 'POST',
@@ -48,7 +48,7 @@ export function forgotPasswordApi(code) {
 
 
 // reset password
-export function forgotPasswordApi(password) {
+export function resetPasswordApi(password) {
 
   return baseRequestApi('/auth/reset-password', {
     method: 'POST',

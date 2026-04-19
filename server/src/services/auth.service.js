@@ -2,18 +2,14 @@
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 
-import { clearPasswordReset, createPasswordReset, createUser, findUserByEmail } from '../repositorys/auth.repository.js'
+import { createUser, findUserByEmail } from '../repositorys/auth.repository.js'
 import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
 import { AppError } from '../utils/app.error.js'
 import { authAttempts } from '../middleware/authAttempts.middleware.js'
 import { redis } from '../configs/redis.js'
+import { emailQueue } from '../workers/email.queue.js'
 
 const SALT_ROUNDS = 10
-const RESET_TTL   = 10 * 60 * 1000
-
-function cryptoHash(value) {
-  return crypto.createHash('sha256').update(value).digest('hex')
-}
 
 // service Sign Up
 export async function serviceSignUp(data) {
@@ -90,22 +86,14 @@ export async function serviceForgotPassword(email) {
     const user = await findUserByEmail(email)
     if(!user) return
     
-    const token = crypto.randomBytes(32).toString('hex')
-    const code  = crypto.randomInt(100000, 999999).toString()
+    const code = crypto.randomInt(100000, 999999).toString()
 
-    const  tokenHash = cryptoHash(token)
-    const  codeHash  = cryptoHash(code)
-
-    const expiresAt = new Date(Date.now() + RESET_TTL)
-
-    await clearPasswordReset(user.id)
-    await createPasswordReset({userId: user.id, tokenHash, codeHash, expiresAt})
-
-    return {
+    const data = {
       email: user.email,
-      token,
       code
     }
+
+    await emailQueue.add('codeQueue', data, { delay: 500 })
 
   } catch(err) {
     throw new AppError('Forgot password failed', 500, {techMessage: err?.message || 'Unknown error', errorCode: 'FORGOT_PASSWORD_FAILED'})
@@ -117,7 +105,7 @@ export async function serviceForgotPassword(email) {
 // service verify code
 export async function serviceVerifyCode(code) {
 
-  
+  const token = crypto.randomBytes(32).toString('hex')
 
 }
 

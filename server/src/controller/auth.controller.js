@@ -43,13 +43,7 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
   const dataService = await serviceForgotPassword(parsedEmail.email)
   if(!dataService) return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
-  const data = {
-    email: parsedEmail.email,
-    token: dataService.token,
-    code: dataService.code
-  }
 
-  await emailQueue.add('emailQueue', data, { delay: 500 })
   return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
 
 }) 
@@ -59,7 +53,7 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
 export const controllerVerifyCode = catchAsync(async (req, res) => {
 
   const parsedData = validateCode(req.body)
-  const result     = await serviceVerifyCode(parsedData.code)   
+  const result     = await serviceVerifyCode(parsedData.code)
 
 })
 

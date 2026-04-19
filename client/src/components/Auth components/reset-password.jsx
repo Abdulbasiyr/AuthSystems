@@ -2,8 +2,7 @@ import { useState } from 'react';
 import '../../css/Auth styles/forgotAndResetPassword.css';
 
 export default function ResetPassword() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [code, setCode] = useState('');
+  const [currentStep, setCurrentStep] = useState(2);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -11,6 +10,7 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  
   const passwordRegex    = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).+$/;
 
   const showAlertReset = (message, type = 'error') => {
@@ -24,26 +24,9 @@ export default function ResetPassword() {
   };
 
   const getSubtitle = () => {
-    if (currentStep === 1) return 'Введите код подтверждения из письма';
     return 'Установите новый пароль';
   };
 
-
-  const handleCodeSubmit = (e) => {
-    e.preventDefault();
-    setError('');
-
-    if (!code || code.length !== 6) {
-      showAlertReset('Пожалуйста, введите 6-значный код', 'error');
-      return;
-    }
-
-    setLoading(true);
-    setTimeout(() => {
-      setCurrentStep(2);
-      setLoading(false);
-    }, 1000);
-  };
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -76,9 +59,6 @@ export default function ResetPassword() {
 
 
   const resetAll = () => {
-    setCurrentStep(1);
-    setEmail('');
-    setCode('');
     setNewPassword('');
     setConfirmPassword('');
     setError('');
@@ -117,49 +97,12 @@ export default function ResetPassword() {
           </div>
 
           <div className="progress-steps">
-            <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}>
-              <div className="step-number">2</div>
-              <div className="step-label">Код</div>
-              <div className="step-line"></div>
-            </div>
             <div className={`step ${currentStep === 2 ? 'active' : ''}`}>
-              <div className="step-number">3</div>
+              <div className="step-number">2</div>
               <div className="step-label">Пароль</div>
             </div>
           </div>
 
-          {/* Form 2: Code Verification */}
-          {currentStep === 1 && (
-            <form className="form" onSubmit={handleCodeSubmit}>
-              <div className="form-group">
-                <label htmlFor="code">Код подтверждения</label>
-                <div className="input-wrapper">
-                  <span className="input-icon">🔐</span>
-                  <input
-                    type="text"
-                    id="code"
-                    placeholder="000000"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    disabled={loading}
-                    maxLength="6"
-                    inputMode="numeric"
-                    required
-                  />
-                </div>
-              </div>
-              <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? 'Проверка...' : 'Подтвердить код'}
-              </button>
-              <div className="form-footer">
-                {error && <div className="alert alert-error">{error}</div>}
-
-                <button type="button" className="back-link" onClick={() => window.location.href = '/auth/forgot-password'}>
-                  ← Изменить email
-                </button>
-              </div>
-            </form>
-          )}
 
           {/* Form 3: Password Reset */}
           {currentStep === 2 && (
