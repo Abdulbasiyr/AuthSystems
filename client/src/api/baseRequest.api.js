@@ -17,15 +17,17 @@ export async function baseRequestApi(path, options = {}) {
     const data = await res.json().catch(() => null)
 
     if(!res.ok) {
-      const error = new Error(data?.message ?? 'Network doesnt work, please try later')
+      const error = new Error(data?.message ?? 'Something went wrong. Please try again later')
       error.details = data?.details ?? null 
       throw error
     }
-
+ 
     return data
   } catch(err) {
-    console.log('ERROR FETCH')
-    throw new Error('Something went wrong. Please try again later')
+    if(err instanceof TypeError) {
+      throw new Error('Problem with network. Please try again later')
+    }
+    throw err
   }
 
 }

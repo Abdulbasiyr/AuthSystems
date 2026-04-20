@@ -53,15 +53,9 @@ const Login = () => {
       setErrors(validationErrors);
       return;
     }
-    // --- ВАЛИДАЦИЯ ---
-    // if (!email.trim()) return setErrors("Email обязателен")
-    // else if (!/\S+@\S+\.\S+/.test(email)) setErrors("Неверный формат email")
-
-    // if (!password.trim()) return setErrors("Пароль обязателен")
 
 
     try{
-
       const user = await loginApi(form);
       console.log(user)
     } catch(err) {

@@ -39,11 +39,12 @@ export default function ForgotPassword() {
 
     try {
       console.log('start')
-      const result = await forgotPasswordApi({email})
+      await forgotPasswordApi({email})
       showAlert('Url address sent your email', 'success');
       setEmail('')
       setLoading(false);
     } catch(err) {
+      console.log(err)
       showAlert(err?.message || 'Something went wrong. Please try again later', 'error')
       setLoading(false);
     }
