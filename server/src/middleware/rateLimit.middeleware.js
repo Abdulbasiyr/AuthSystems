@@ -2,13 +2,19 @@ import { redis } from "../configs/redis"
 
 
 
-export const reteLimit = async (req, res, next) => {
+export const rateLimit = async (req, res, next) => {
   const ip  = req.ip
-  const key = `rate:${ip}`
+  let key;
+
+  if(req.body?.email) {
+    key = `rate:${ip}:${req.body.email}`
+  } else {
+    key = `rate:${ip}`
+  }
 
   const count = await redis.incr(key)
 
-  if(count <= 5 ) await redis.expire(key, 60)
+  if(count === 1 ) await redis.expire(key, 90)
   
   if(count > 5) {
     res.status(429).json({message: 'Too many requests. Please try again later'})

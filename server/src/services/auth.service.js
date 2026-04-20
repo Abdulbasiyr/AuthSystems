@@ -2,7 +2,7 @@
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 
-import { createUser, findUserByEmail } from '../repositorys/auth.repository.js'
+import { createUser, findUserByEmail, updatePassword } from '../repositorys/auth.repository.js'
 import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
 import { AppError } from '../utils/app.error.js'
 import { authAttempts } from '../middleware/authAttempts.middleware.js'
@@ -59,7 +59,7 @@ export async function serviceLogin(data) {
     await authAttempts(user.email)
     throw new AppError('Email or password invalid', 401, {techMessage: 'Invalid password', errorCode: 'INVALID_CREDENTIALS'})
   }
-  redis.del(`auth:attempts:${user.email}`)
+  await redis.del(`auth:attempts:${user.email}`)
 
   const refreshToken = createRefreshToken(user)
   const accessToken  = createAccessToken(user)
@@ -85,7 +85,7 @@ export async function serviceForgotPassword(email) {
   try {
     
     const user = await findUserByEmail(email)
-    if(!user) return
+    if(!user) return false
 
     const token = crypto.randomBytes(32).toString('hex')
     await redis.set(`reset:token:${token}`, user.email, 'EX', 600)
@@ -105,10 +105,18 @@ export async function serviceForgotPassword(email) {
 
 
 // Reset password 
-export async function serviceResetPassword(token) {
+export async function serviceResetPassword(data) {
 
-  if(!token) throw new AppError('Invalid or expired reset link', 400, {techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
+  if(!data.token) throw new AppError('Invalid or expired reset link', 400, {techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
  
-  const email = redis.get(`reset:token:${token}`)
+  const email = await redis.get(`reset:token:${data.token}`)
+  if(!email) throw new AppError('Invalid or expired reset link', 400, {techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
+
+  try {
+    await updatePassword({email, password: data.password})
+    await redis.del(`reset:token:${data.token}`)
+  } catch(err) {
+    throw new AppError('Reset password failed', 500, {techMessage: err?.message || 'Unknown Reset Password error', errorCode: 'RESET_PASSWORD_FAILED'})
+  }
 
 }

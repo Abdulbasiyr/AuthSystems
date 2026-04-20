@@ -23,8 +23,8 @@ const emailSchema = z.object({
   email: z.string().trim().toLowerCase().email('Please, provide a valid email')
 })
 
-const codeSchema = z.object({
-  code: z.string().trim().regex(codeRegex, 'Invalid code. Please try again')
+const passwordShema = z.object({
+  password: z.string().trim().min(10, 'Password is too short').max(100, 'Password is too long').regex(passwordRegex, 'Password must contain a capital letter, number, and one symbol')
 })
 
 // validated Sign Up
@@ -70,10 +70,11 @@ export function validateEmail(email) {
 }
 
 
-// verify validate code
-export function validateCode(code) {
-  const parsed = codeSchema.safeParse(code)
-  if(!parsed.success) throw new AppError('Please, provide a valid code', 400, {techMessage: parsed.error.issues[0].message ?? 'Invalid code', errorCode: 'VERIFY_CODE_FAILED'})
+// chech password
+export function validatePassword(password) {
+  const parsed = passwordShema.safeParse(password)
+  if(!parsed.success) throw new AppError('Password field are filled in incorrectly', 400, {techMessage: parsed.error.issues[0].message ?? 'Reset password validation failed', errorCode: 'VALIDATION_FAILED'})
 
   return parsed.data
 }
+

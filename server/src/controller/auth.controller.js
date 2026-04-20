@@ -4,7 +4,7 @@ import { serviceForgotPassword, serviceLogin, serviceResetPassword, serviceSignU
 import { AppError } from "../utils/app.error.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
-import { validateCode, validateEmail, validateLogin, validateSignUp } from "../validation/auth.validation.js"
+import { validateCode, validateEmail, validateLogin, validatePassword, validateSignUp } from "../validation/auth.validation.js"
 import { emailQueue } from "../workers/email.queue.js"
 
 
@@ -42,10 +42,9 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
 
   const parsedEmail = validateEmail(req.body)
   const dataService = await serviceForgotPassword(parsedEmail.email)
-  if(!dataService) return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
+  if(!dataService) return res.status(200).json({})
 
-
-  return res.status(200).json({ message: 'The confirmation code has been sent to your email address' })
+  return res.status(200).json({})
 
 }) 
 
@@ -53,7 +52,12 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
 // reset password 
 export const controllerResetPassword = catchAsync(async (req, res) => {
 
-  const token  = req.query?.token
-  const result = await serviceResetPassword(token) 
+  const token           = req.query?.token
+  const { newPassword } = req.body 
+
+  const password = validatePassword(newPassword)
+  await serviceResetPassword({token, password}) 
+
+  return res.sendStatus(204)
 
 })
