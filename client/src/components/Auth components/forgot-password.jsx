@@ -38,9 +38,9 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const result = await forgotPasswordApi({email})
       console.log('start')
-      showAlert(result?.message, 'success');
+      const result = await forgotPasswordApi({email})
+      showAlert('Url address sent your email', 'success');
       setEmail('')
       setLoading(false);
     } catch(err) {

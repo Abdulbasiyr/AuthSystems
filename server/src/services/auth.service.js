@@ -94,9 +94,8 @@ export async function serviceForgotPassword(email) {
       email: user.email,
       token
     }
-
-    await emailQueue.add('emailQueue', data, { delay: 500 })
-
+    emailQueue.add('emailQueue', data, { delay: 500 })
+    return true
   } catch(err) {
     throw new AppError('Forgot password failed', 500, {techMessage: err?.message || 'Unknown error', errorCode: 'FORGOT_PASSWORD_FAILED'})
   }
