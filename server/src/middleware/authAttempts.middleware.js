@@ -1,7 +1,7 @@
-import { redis } from "../configs/redis"
+import { redis } from "../configs/redis.js"
 
 
-export async function AuthAttempts(email) {
+export async function authAttempts(email) {
 
   const key = `auth:attempts:${email}`
 

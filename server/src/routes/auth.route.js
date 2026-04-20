@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { controllerForgotPassword, controllerLogin, controllerResetPassword, controllerSignUp, controllerVerifyCode } from "../controller/auth.controller.js";
+import { controllerForgotPassword, controllerLogin, controllerResetPassword, controllerSignUp } from "../controller/auth.controller.js";
 
 const router = Router()
 

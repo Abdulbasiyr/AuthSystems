@@ -1,4 +1,4 @@
-import { redis } from "../configs/redis"
+import { redis } from "../configs/redis.js"
 
 
 

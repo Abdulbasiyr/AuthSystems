@@ -1,11 +1,10 @@
 
 
-import { serviceForgotPassword, serviceLogin, serviceResetPassword, serviceSignUp, serviceVerifyCode } from "../services/auth.service.js"
+import { serviceForgotPassword, serviceLogin, serviceResetPassword, serviceSignUp } from "../services/auth.service.js"
 import { AppError } from "../utils/app.error.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
-import { validateCode, validateEmail, validateLogin, validatePassword, validateSignUp } from "../validation/auth.validation.js"
-import { emailQueue } from "../workers/email.queue.js"
+import { validateEmail, validateLogin, validatePassword, validateSignUp } from "../validation/auth.validation.js"
 
 
 
