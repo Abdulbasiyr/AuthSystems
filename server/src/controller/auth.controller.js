@@ -1,6 +1,7 @@
 
 
 import { serviceForgotPassword, serviceLogin, serviceResetPassword, serviceSignUp, serviceVerifyCode } from "../services/auth.service.js"
+import { AppError } from "../utils/app.error.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
 import { validateCode, validateEmail, validateLogin, validateSignUp } from "../validation/auth.validation.js"
@@ -49,18 +50,10 @@ export const controllerForgotPassword = catchAsync(async (req, res) => {
 }) 
 
 
-// verify code controller
-export const controllerVerifyCode = catchAsync(async (req, res) => {
-
-  const parsedData = validateCode(req.body)
-  const result     = await serviceVerifyCode(parsedData.code)
-
-})
-
 // reset password 
 export const controllerResetPassword = catchAsync(async (req, res) => {
 
-  const parsedEmail = validateEmail(req.body)
-  const result      = serviceResetPassword(parsedEmail.email)
+  const token  = req.query?.token
+  const result = await serviceResetPassword(token) 
 
 })

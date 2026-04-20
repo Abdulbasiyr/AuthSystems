@@ -9,7 +9,6 @@ router.post('/signup', controllerSignUp)
 router.post('/login', controllerLogin)
 
 router.post('/forgot-password', controllerForgotPassword)
-router.post('/verify-reset-code', controllerVerifyCode)
 router.post('/reset-password', controllerResetPassword)
 
 

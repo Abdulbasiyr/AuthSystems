@@ -1,7 +1,7 @@
 import { redis } from "../configs/redis"
 
 
-export const authAttempts = async(email) => {
+export async function AuthAttempts(email) {
 
   const key = `auth:attempts:${email}`
 
@@ -12,5 +12,6 @@ export const authAttempts = async(email) => {
   if(count >= 5) {
     throw new AppError('Too many invalid password. Please try again later', 403, {techMessage: 'Too many invalid password', errorCode: 'TOO_MANY_ATTEMPTS'})
   }
+
 
 }

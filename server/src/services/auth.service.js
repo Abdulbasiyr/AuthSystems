@@ -8,6 +8,7 @@ import { AppError } from '../utils/app.error.js'
 import { authAttempts } from '../middleware/authAttempts.middleware.js'
 import { redis } from '../configs/redis.js'
 import { emailQueue } from '../workers/email.queue.js'
+import { validateEmail } from '../validation/auth.validation.js'
 
 const SALT_ROUNDS = 10
 
@@ -76,7 +77,7 @@ export async function serviceLogin(data) {
 
 
 
-// { service for Forgot, Reset Passwords }
+// { service for Forgot,Reset Passwords }
 
 // fotgot password service
 export async function serviceForgotPassword(email) {
@@ -85,15 +86,16 @@ export async function serviceForgotPassword(email) {
     
     const user = await findUserByEmail(email)
     if(!user) return
-    
-    const code = crypto.randomInt(100000, 999999).toString()
+
+    const token = crypto.randomBytes(32).toString('hex')
+    await redis.set(`reset:token:${token}`, user.email, 'EX', 600)
 
     const data = {
       email: user.email,
-      code
+      token
     }
 
-    await emailQueue.add('codeQueue', data, { delay: 500 })
+    await emailQueue.add('emailQueue', data, { delay: 500 })
 
   } catch(err) {
     throw new AppError('Forgot password failed', 500, {techMessage: err?.message || 'Unknown error', errorCode: 'FORGOT_PASSWORD_FAILED'})
@@ -102,18 +104,11 @@ export async function serviceForgotPassword(email) {
 }
 
 
-// service verify code
-export async function serviceVerifyCode(code) {
-
-  const token = crypto.randomBytes(32).toString('hex')
-
-}
-
-
 // Reset password 
-export async function serviceResetPassword(email) {
+export async function serviceResetPassword(token) {
 
-  const user = await findUserByEmail(email)
-  if(!user) throw new AppError()
+  if(!token) throw new AppError('Invalid or expired reset link', 400, {techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
+ 
+  const email = redis.get(`reset:token:${token}`)
 
 }

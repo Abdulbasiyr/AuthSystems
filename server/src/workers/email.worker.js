@@ -6,8 +6,8 @@ import { redis } from "../configs/redis.js";
 
 new Worker('emailQueue', async (job) => {
 
-  const {email, token, code} = job.data
-  await sendEmail({email, token, code})
+  const {email, token} = job.data
+  await sendEmail({email, token})
 
 }, {
   connection: redis,

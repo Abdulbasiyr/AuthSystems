@@ -36,17 +36,6 @@ export function forgotPasswordApi(email) {
 }
 
 
-// verify reset code
-export function verifyCodeApi(code) {
-
-  return baseRequestApi('/auth/verify-reset-code', {
-    method: 'POST',
-    body: JSON.stringify(code)
-  })
-
-}
-
-
 // reset password
 export function resetPasswordApi(password) {
 

@@ -15,8 +15,8 @@ const transporter = nodemailer.createTransport({
 export async function sendEmail(user) {
   try {
     console.log('send email start')
-    if (!user.email || !user.token || !user.code) {
-      throw new AppError("Invalid email payload", 400, {techMessage: 'One of data is not for send code', errorCode: 'EMAIL_SEND_FAILED'})
+    if (!user.email || !user.token) {
+      throw new AppError("Invalid email payload", 400, {techMessage: 'One of data is not for send RESET PASSWORD', errorCode: 'EMAIL_SEND_FAILED'})
     }
 
     const url = `${process.env.RESET_PASSWORD_URL}?token=${encodeURIComponent(user.token)}`
@@ -27,7 +27,6 @@ export async function sendEmail(user) {
       subject: "Reset your password",
       html:`
         <h2>Password Reset</h2>
-        <h2>Your code: <b>${user.code}</b></h2>
         <button><a href="${url}">Reset Password</a></button>
         <h3>If you didn’t request this — ignore</h3>
       `
