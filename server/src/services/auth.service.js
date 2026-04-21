@@ -3,12 +3,11 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 
 import { createUser, findUserByEmail, updatePassword } from '../repositorys/auth.repository.js'
-import { createAccessToken, createRefreshToken } from '../utils/token.utils.js'
+import { createAccessToken, createRefreshToken, verifyRefreshToken } from '../utils/token.utils.js'
 import { AppError } from '../utils/app.error.js'
 import { authAttempts } from '../middleware/authAttempts.middleware.js'
 import { redis } from '../configs/redis.js'
 import { emailQueue } from '../workers/email.queue.js'
-import { validateEmail } from '../validation/auth.validation.js'
 
 const SALT_ROUNDS = 10
 
@@ -38,10 +37,10 @@ export async function serviceSignUp(data) {
     if(err instanceof AppError) throw err
 
     if(err?.code === 'P2002') {
-      throw new AppError('User already exists', 409, {techMessage: `Email: ${email} already exists`, errorCode: 'EMAIL_ALREADY_EXISTS'})
+      throw new AppError({ userMessage: 'User already exists', statusCode: 409, techMessage: `Email: ${email} already exists`, errorCode: 'EMAIL_ALREADY_EXISTS'})
     }
 
-    throw new AppError('Failed to register a user. Please try again later', 500, {techMessage: err?.message || 'Unknown signup user', errorCode: 'SIGNUP_FAILED'})
+    throw new AppError({ userMessage: 'Failed to register a user. Please try again later', statusCode: 500, techMessage: err?.message || 'Unknown signup user', errorCode: 'SIGNUP_FAILED'})
   }
 
 }
@@ -52,12 +51,12 @@ export async function serviceLogin(data) {
 
     
   const user = await findUserByEmail(data.email)
-  if(!user) throw new AppError('Email or password invalid', 401, {techMessage:`User with email ${data.email} not found`, errorCode: 'INVALID_CREDENTIALS'})
+  if(!user) throw new AppError({ userMessage: 'Email or password invalid', statusCode: 401, techMessage:`User with email ${data.email} not found`, errorCode: 'INVALID_CREDENTIALS'})
 
   const isValidPassword = await bcrypt.compare(data.password, user.password)
   if(!isValidPassword) {
     await authAttempts(user.email)
-    throw new AppError('Email or password invalid', 401, {techMessage: 'Invalid password', errorCode: 'INVALID_CREDENTIALS'})
+    throw new AppError({ userMessage: 'Email or password invalid', statusCode: 401, techMessage: 'Invalid password', errorCode: 'INVALID_CREDENTIALS'})
   }
   await redis.del(`auth:attempts:${user.email}`)
 
@@ -97,7 +96,7 @@ export async function serviceForgotPassword(email) {
     emailQueue.add('emailQueue', data, { delay: 500 })
     return true
   } catch(err) {
-    throw new AppError('Forgot password failed', 500, {techMessage: err?.message || 'Unknown error', errorCode: 'FORGOT_PASSWORD_FAILED'})
+    throw new AppError({ userMessage: 'Forgot password failed', statusCode: 500, techMessage: err?.message || 'Unknown error', errorCode: 'FORGOT_PASSWORD_FAILED'})
   }
 
 }
@@ -109,13 +108,23 @@ export async function serviceResetPassword(data) {
   if(!data.token) throw new AppError('Invalid or expired reset link', 400, {techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
  
   const email = await redis.get(`reset:token:${data.token}`)
-  if(!email) throw new AppError('Invalid or expired reset link', 400, {techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
+  if(!email) throw new AppError({ userMessage: 'Invalid or expired reset link', statusCode: 400, techMessage: 'Reset token not found or expired', errorCode: 'INVALID_RESET_TOKEN'})
 
   try {
     await updatePassword({email, password: data.password})
     await redis.del(`reset:token:${data.token}`)
   } catch(err) {
-    throw new AppError('Reset password failed', 500, {techMessage: err?.message || 'Unknown Reset Password error', errorCode: 'RESET_PASSWORD_FAILED'})
+    throw new AppError({userMessage: 'Reset password failed', statusCode: 500, techMessage: err?.message || 'Unknown Reset Password error', errorCode: 'RESET_PASSWORD_FAILED'})
   }
+
+}
+
+
+// service get profile
+export async function serviceGetProfile(refreshToken) {
+
+  if(!refreshToken) throw new AppError('')
+  const checkedRefreshToken = verifyRefreshToken(refreshToken)
+  console.log(checkedRefreshToken)
 
 }

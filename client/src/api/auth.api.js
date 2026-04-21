@@ -46,3 +46,10 @@ export function resetPasswordApi(payload) {
   })
 
 }
+
+
+export function getProfileAuthApi() {
+  return baseRequestApi('/auth/profile', {
+    method: 'GET'
+  })
+}

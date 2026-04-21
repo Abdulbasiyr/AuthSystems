@@ -16,7 +16,7 @@ export async function sendEmail(user) {
   try {
     console.log('send email start')
     if (!user.email || !user.token) {
-      throw new AppError("Invalid email payload", 400, {techMessage: 'One of data is not for send RESET PASSWORD', errorCode: 'EMAIL_SEND_FAILED'})
+      throw new AppError({ userMessage: "Invalid email payload", statusCode: 400, techMessage: 'One of data is not for send RESET PASSWORD', errorCode: 'EMAIL_SEND_FAILED'})
     }
 
     const url = `${process.env.RESET_PASSWORD_URL}?token=${encodeURIComponent(user.token)}`
@@ -35,9 +35,6 @@ export async function sendEmail(user) {
     return info
 
   } catch (err) {
-    throw new AppError("Something went wrong. Plesage try again later", 500, {
-      techMessage: err?.message,
-      errorCode: "EMAIL_SEND_FAILED"
-    })
+    throw new AppError({ userMessage: "Something went wrong. Plesage try again later", statusCode: 500, techMessage: err?.message, errorCode: "EMAIL_SEND_FAILED"})
   }
 }

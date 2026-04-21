@@ -19,3 +19,8 @@ export function createAccessToken(data) {
     { expiresIn: '30m' }
   )
 }
+
+
+export function verifyRefreshToken(refreshToken) {
+  return jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY)
+}

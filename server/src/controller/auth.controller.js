@@ -1,7 +1,6 @@
 
 
-import { serviceForgotPassword, serviceLogin, serviceResetPassword, serviceSignUp } from "../services/auth.service.js"
-import { AppError } from "../utils/app.error.js"
+import { serviceForgotPassword, serviceGetProfile, serviceLogin, serviceResetPassword, serviceSignUp } from "../services/auth.service.js"
 import { catchAsync } from "../utils/catchAsync.js"
 import { resCookie } from "../utils/cookie.utils.js"
 import { validateEmail, validateLogin, validatePassword, validateSignUp } from "../validation/auth.validation.js"
@@ -58,5 +57,14 @@ export const controllerResetPassword = catchAsync(async (req, res) => {
   await serviceResetPassword({token, password}) 
 
   return res.sendStatus(204)
+
+})
+
+
+// check authorization
+export const controllerGetProfile = catchAsync( async(req, res) => {
+
+  const { refreshToken } = req.cookies
+  const result       = await serviceGetProfile(refreshToken)
 
 })
