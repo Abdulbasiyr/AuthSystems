@@ -57,7 +57,7 @@ const Login = () => {
 
     try{
       const user = await loginApi(form);
-      console.log(user)
+      window.location = '/'
     } catch(err) {
       setErrors({[err?.details?.path]: err?.details?.message})
       setDownError(err.message ?? '')

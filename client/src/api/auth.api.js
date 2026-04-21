@@ -37,11 +37,12 @@ export function forgotPasswordApi(email) {
 
 
 // reset password
-export function resetPasswordApi(password) {
+export function resetPasswordApi(payload) {
+  const {newPassword, token} = payload
 
-  return baseRequestApi('/auth/reset-password', {
+  return baseRequestApi(`/auth/reset-password?token=${token}`, {
     method: 'POST',
-    body: JSON.stringify(password)
+    body: JSON.stringify({newPassword})
   })
 
 }

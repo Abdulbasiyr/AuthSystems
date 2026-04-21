@@ -54,7 +54,7 @@ export const controllerResetPassword = catchAsync(async (req, res) => {
   const token           = req.query?.token
   const { newPassword } = req.body 
 
-  const password = validatePassword(newPassword)
+  const password = validatePassword({password: newPassword})
   await serviceResetPassword({token, password}) 
 
   return res.sendStatus(204)

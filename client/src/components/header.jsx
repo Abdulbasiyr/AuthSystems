@@ -16,10 +16,12 @@ function Header() {
             <li className="nav-link">  Контакты </li>
           </ul>
         </nav>
-        <div className="auth-buttons">
+        {/* <div className="auth-buttons">
           <Link to="/auth?mode=login" className="btn login-btn">Войти</Link>
           <Link to="/auth?mode=signup" className="btn register-btn">Регистрация</Link>
-        </div>
+        </div> */}
+        
+        <div className="profileContainer">U</div>
       </div>
     </header>
   );

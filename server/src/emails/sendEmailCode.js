@@ -1,6 +1,6 @@
 
-import nodemailer from "nodemailer"
 import 'dotenv/config'
+import nodemailer from "nodemailer"
 
 import { AppError } from "../utils/app.error.js"
 

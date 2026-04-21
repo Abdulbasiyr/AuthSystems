@@ -18,7 +18,6 @@ export default function ForgotPassword() {
       setTimeout(() => setError(''), 4000);
     } else {
       setSuccess(message);
-      setTimeout(() => setSuccess(''), 4000);
     }
   };
 
@@ -29,6 +28,8 @@ export default function ForgotPassword() {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    showAlert('');
+
 
     if (!email.trim()) {
       showAlert('Пожалуйста, введите email', 'error');
@@ -38,13 +39,12 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      console.log('start')
       await forgotPasswordApi({email})
-      showAlert('Url address sent your email', 'success');
+      showAlert('Url address sent. Check your email', 'success');
+      setCurrentStep(0)
       setEmail('')
       setLoading(false);
     } catch(err) {
-      console.log(err)
       showAlert(err?.message || 'Something went wrong. Please try again later', 'error')
       setLoading(false);
     }

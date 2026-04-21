@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import '../../css/Auth styles/forgotAndResetPassword.css';
+import { resetPasswordApi } from '../../api/auth.api';
+import { useSearchParams } from 'react-router-dom';
 
 export default function ResetPassword() {
   const [currentStep, setCurrentStep] = useState(2);
@@ -10,6 +12,9 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get('token')
   
   const passwordRegex    = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).+$/;
 
@@ -28,7 +33,7 @@ export default function ResetPassword() {
   };
 
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -48,13 +53,18 @@ export default function ResetPassword() {
     }
 
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await resetPasswordApi({newPassword, token})
       showAlertReset('Пароль успешно изменён!', 'success');
       setTimeout(() => {
         resetAll();
+        window.location = '/auth?mode=login'
       }, 2000);
       setLoading(false);
-    }, 1000);
+    } catch(err) {
+      setLoading(false)
+    }
+
   };
 
 
