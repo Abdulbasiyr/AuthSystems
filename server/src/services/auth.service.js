@@ -2,7 +2,7 @@
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 
-import { createUser, findUserByEmail, updatePassword } from '../repositorys/auth.repository.js'
+import { createUser, findUserByEmail, findUserById, updatePassword } from '../repositorys/auth.repository.js'
 import { createAccessToken, createRefreshToken, verifyRefreshToken } from '../utils/token.utils.js'
 import { AppError } from '../utils/app.error.js'
 import { authAttempts } from '../middleware/authAttempts.middleware.js'
@@ -126,5 +126,12 @@ export async function serviceGetProfile(refreshToken) {
   if(!refreshToken) throw new AppError({techMessage: 'RefreshToken expired', errorCode: 'UNAUTHORIZED'})
   const checkedRefreshToken = verifyRefreshToken(refreshToken)
 
-  console.log(checkedRefreshToken)
+  const user = await findUserById(checkedRefreshToken.id)
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  }
+
 }

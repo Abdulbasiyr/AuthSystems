@@ -2,7 +2,8 @@
 import { signUpApi } from "../../api/auth.api";
 import "../../css/Auth styles/signup.css";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../Context";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -10,6 +11,8 @@ const Register = () => {
     email: "",
     password: "",
   });
+
+  const {user, setUser} = useContext(AuthContext)
 
   const [errors, setErrors] = useState({});
   const [downError, setDownError] = useState('')
@@ -55,9 +58,10 @@ const Register = () => {
 
     // отправка на сервер
     try {
-      const user = await signUpApi(form)
-      console.log(user)
+      const userData = await signUpApi(form)
       setForm({name: '', email: '', password: ''})
+      setUser(userData ?? null)
+      window.location = '/'
     } catch(err) {
       if (err?.details && Object.keys(err.details).length > 0) {
         return setErrors({[err?.details?.path]: err?.details?.message})

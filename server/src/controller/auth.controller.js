@@ -65,6 +65,8 @@ export const controllerResetPassword = catchAsync(async (req, res) => {
 export const controllerGetProfile = catchAsync( async(req, res) => {
 
   const { refreshToken } = req.cookies
-  const result       = await serviceGetProfile(refreshToken)
+  const result           = await serviceGetProfile(refreshToken)
+
+  res.status(200).json(result)
 
 })

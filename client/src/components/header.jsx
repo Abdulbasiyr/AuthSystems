@@ -1,8 +1,9 @@
-import React from "react";
 import { Link } from "react-router-dom"; // чтобы кнопки вели на страницы
 import '../css/header.css'
 
-function Header() {
+function Header({ user }) {
+
+
   return (
     <header className="header">
       <div className="container">
@@ -16,12 +17,12 @@ function Header() {
             <li className="nav-link">  Контакты </li>
           </ul>
         </nav>
-        {/* <div className="auth-buttons">
-          <Link to="/auth?mode=login" className="btn login-btn">Войти</Link>
-          <Link to="/auth?mode=signup" className="btn register-btn">Регистрация</Link>
-        </div> */}
-        
-        <div className="profileContainer">U</div>
+        { !user ? <div className="auth-buttons">
+                    <Link to="/auth?mode=login" className="btn login-btn">Войти</Link>
+                    <Link to="/auth?mode=signup" className="btn register-btn">Регистрация</Link>
+                  </div>
+        : null }
+        <div className="profileContainer">{user?.name.charAt(0) ?? ''}</div>
       </div>
     </header>
   );

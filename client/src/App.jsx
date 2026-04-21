@@ -5,22 +5,25 @@ import Features from './components/feauters'
 import Footer from './components/footer'
 import Header from './components/header'
 import Main from './components/body'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getProfileAuthApi } from './api/auth.api.js'
 
 function App() {
 
+  const [user, setUser] = useState(null)
+
   useEffect(() => {
     (async() => {
-      await getProfileAuthApi()
+      const userData = await getProfileAuthApi()
+      setUser(userData ?? null)
     })()
   }, [])
 
   return (
     <>
     
-      <Header />
-      <Main />
+      <Header user={user} />
+      <Main user={user} />
       <Features />
       <Footer />
 

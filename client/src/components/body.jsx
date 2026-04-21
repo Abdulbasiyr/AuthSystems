@@ -2,7 +2,7 @@
 import "../css/body.css";
 import { Link } from "react-router-dom";
 
-const Main = () => {
+const Main = ({user}) => {
   return (
     <main className="main">
       <div className="container main-container">
@@ -26,9 +26,9 @@ const Main = () => {
 
           <div className="hero-buttons">
 
-              <Link to="/auth?mode=signup"  className="create-btn">Создать аккаунт →</Link>
- 
-              <Link to="/auth?mode=login" className="hero-login" > Войти → </Link> 
+            <Link to="/auth?mode=signup"  className="create-btn">Создать аккаунт →</Link>
+
+            { !user ? <Link to="/auth?mode=login" className="hero-login" > Войти → </Link> : null } 
 
           </div>
 
