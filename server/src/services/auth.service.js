@@ -123,8 +123,8 @@ export async function serviceResetPassword(data) {
 // service get profile
 export async function serviceGetProfile(refreshToken) {
 
-  if(!refreshToken) throw new AppError('')
+  if(!refreshToken) throw new AppError({techMessage: 'RefreshToken expired', errorCode: 'UNAUTHORIZED'})
   const checkedRefreshToken = verifyRefreshToken(refreshToken)
-  console.log(checkedRefreshToken)
 
+  console.log(checkedRefreshToken)
 }
